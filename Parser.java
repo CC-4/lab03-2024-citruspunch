@@ -9,6 +9,7 @@
 
 import java.util.LinkedList;
 import java.util.Stack;
+import java.lang.Math;
 
 public class Parser {
 
@@ -33,7 +34,7 @@ public class Parser {
 
         // Shunting Yard Algorithm
         // Imprime el resultado de operar el input
-        // System.out.println("Resultado: " + this.operandos.peek());
+        System.out.println("Resultado: " + this.operandos.peek());
 
         // Verifica si terminamos de consumir el input
         if(this.next != this.tokens.size()) {
@@ -48,7 +49,6 @@ public class Parser {
         if(this.next < this.tokens.size() && this.tokens.get(this.next).equals(id)) {
             
             // Codigo para el Shunting Yard Algorithm
-            /*
             if (id == Token.NUMBER) {
 				// Encontramos un numero
 				// Debemos guardarlo en el stack de operandos
@@ -67,7 +67,6 @@ public class Parser {
 				// Que pushOp haga el trabajo, no quiero hacerlo yo aqui
 				pushOp( this.tokens.get(this.next) );
 			}
-			*/
 
             this.next++;
             return true;
@@ -78,15 +77,27 @@ public class Parser {
     // Funcion que verifica la precedencia de un operador
     private int pre(Token op) {
         /* TODO: Su codigo aqui */
-
-
         /* El codigo de esta seccion se explicara en clase */
 
         switch(op.getId()) {
         	case Token.PLUS:
         		return 1;
+            case Token.MINUS:
+                return 1;
         	case Token.MULT:
         		return 2;
+            case Token.DIV:
+                return 2;
+            case Token.MOD:
+                return 2;
+            case Token.EXP:
+                return 3;
+            case Token.UNARY:
+                return 4;
+            case Token.RPAREN:
+                return 5;
+            case Token.LPAREN:
+                return 5;
         	default:
         		return -1;
         }
@@ -105,12 +116,41 @@ public class Parser {
         	// print para debug, quitarlo al terminar
         	System.out.println("suma " + a + " + " + b);
         	this.operandos.push(a + b);
+        } else if (op.equals(Token.MINUS)){
+        	double a = this.operandos.pop();
+        	double b = this.operandos.pop();
+        	// print para debug, quitarlo al terminar
+        	System.out.println("resta " + a + " - " + b);
+        	this.operandos.push(a - b);
         } else if (op.equals(Token.MULT)) {
         	double a = this.operandos.pop();
         	double b = this.operandos.pop();
         	// print para debug, quitarlo al terminar
         	System.out.println("mult " + a + " * " + b);
         	this.operandos.push(a * b);
+        } else if (op.equals(Token.DIV)) {
+        	double a = this.operandos.pop();
+        	double b = this.operandos.pop();
+        	// print para debug, quitarlo al terminar
+        	System.out.println("div " + a + " / " + b);
+        	this.operandos.push(a / b);
+        } else if (op.equals(Token.MOD)) {
+        	double a = this.operandos.pop();
+        	double b = this.operandos.pop();
+        	// print para debug, quitarlo al terminar
+        	System.out.println("mod " + a + " % " + b);
+        	this.operandos.push(a % b);
+        } else if (op.equals(Token.EXP)) {
+        	double a = this.operandos.pop();
+        	double b = this.operandos.pop();
+        	// print para debug, quitarlo al terminar
+        	System.out.println("exp " + a + " ^ " + b);
+        	this.operandos.push(Math.pow(a,b));
+        } else if (op.equals(Token.UNARY)) {
+        	double a = this.operandos.pop();
+        	// print para debug, quitarlo al terminar
+        	System.out.println("unario " + "~" + a );
+        	this.operandos.push(a * (-1));
         }
     }
 
