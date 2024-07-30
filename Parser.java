@@ -79,6 +79,7 @@ public class Parser {
     private int pre(Token op) {
         /* TODO: Su codigo aqui */
 
+
         /* El codigo de esta seccion se explicara en clase */
 
         switch(op.getId()) {
@@ -129,13 +130,103 @@ public class Parser {
 
     }
 
+    /* TODO: sus otras funciones aqui */
+
+    /*
+        S ::= E;
+        E ::= numberN   |   - EN   |   (E)N
+        N ::= + EN
+        |   - EN
+        |   * EN
+        |   / EN
+        |   % EN
+        |   ^ EN
+        | lambda
+    */
+
     private boolean S() {
         return E() && term(Token.SEMI);
     }
 
     private boolean E() {
+        int save = this.next;
+
+        this.next = save;
+        if ( E1() ) { return true; }
+
+        this.next = save;
+        if ( E2() ) { return true; }
+
+        this.next = save;
+        if ( E3() ) { return true; }
         return false;
     }
 
-    /* TODO: sus otras funciones aqui */
+    private boolean E1() {
+        return term(Token.NUMBER) && N();
+    }
+
+    private boolean E2() {
+        return term(Token.UNARY) && E() && N();
+    }
+
+    private boolean E3() {
+        return term(Token.LPAREN) && E() && term(Token.RPAREN) && N();
+    }
+
+    private boolean N() {
+        int save = this.next;
+
+        this.next = save;
+        if ( N1() ) { return true; }
+
+        this.next = save;
+        if ( N2() ) { return true; }
+
+        this.next = save;
+        if ( N3() ) { return true; }
+
+        this.next = save;
+        if ( N4() ) { return true; }
+
+        this.next = save;
+        if ( N5() ) { return true; }
+
+        this.next = save;
+        if ( N6() ) { return true; }
+
+        this.next = save;
+        if ( N7() ) { return true; }
+
+        return false;
+    }
+
+    private boolean N1() {
+        return term(Token.PLUS) && E() && N();
+    }
+
+    private boolean N2() {
+        return term(Token.MINUS) && E() && N();
+    }
+
+    private boolean N3() {
+        return term(Token.MULT) && E() && N();
+    }
+
+    private boolean N4() {
+        return term(Token.DIV) && E() && N();
+    }
+
+    private boolean N5() {
+        return term(Token.MOD) && E() && N();
+    }
+
+    private boolean N6() {
+        return term(Token.EXP) && E() && N();
+    }
+    
+    private boolean N7() {
+        return true;
+    }
+
 }
