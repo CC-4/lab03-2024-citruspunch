@@ -94,10 +94,6 @@ public class Parser {
                 return 3;
             case Token.UNARY:
                 return 4;
-            case Token.RPAREN:
-                return 5;
-            case Token.LPAREN:
-                return 5;
         	default:
         		return -1;
         }
@@ -111,14 +107,14 @@ public class Parser {
         /* El codigo de esta seccion se explicara en clase */
 
         if (op.equals(Token.PLUS)) {
-        	double a = this.operandos.pop();
         	double b = this.operandos.pop();
+        	double a = this.operandos.pop();
         	// print para debug, quitarlo al terminar
         	System.out.println("suma " + a + " + " + b);
         	this.operandos.push(a + b);
         } else if (op.equals(Token.MINUS)){
-        	double a = this.operandos.pop();
         	double b = this.operandos.pop();
+        	double a = this.operandos.pop();
         	// print para debug, quitarlo al terminar
         	System.out.println("resta " + a + " - " + b);
         	this.operandos.push(a - b);
@@ -129,20 +125,20 @@ public class Parser {
         	System.out.println("mult " + a + " * " + b);
         	this.operandos.push(a * b);
         } else if (op.equals(Token.DIV)) {
-        	double a = this.operandos.pop();
         	double b = this.operandos.pop();
+        	double a = this.operandos.pop();
         	// print para debug, quitarlo al terminar
         	System.out.println("div " + a + " / " + b);
         	this.operandos.push(a / b);
         } else if (op.equals(Token.MOD)) {
-        	double a = this.operandos.pop();
         	double b = this.operandos.pop();
+        	double a = this.operandos.pop();
         	// print para debug, quitarlo al terminar
         	System.out.println("mod " + a + " % " + b);
         	this.operandos.push(a % b);
         } else if (op.equals(Token.EXP)) {
-        	double a = this.operandos.pop();
         	double b = this.operandos.pop();
+        	double a = this.operandos.pop();
         	// print para debug, quitarlo al terminar
         	System.out.println("exp " + a + " ^ " + b);
         	this.operandos.push(Math.pow(a,b));
@@ -158,19 +154,30 @@ public class Parser {
         /* TODO: Su codigo aqui */
 
         /* Casi todo el codigo para esta seccion se vera en clase */
-    	
-    	// Si no hay operandos automaticamente ingresamos op al stack
-
-    	// Si si hay operandos:
-    		// Obtenemos la precedencia de op
-        	// Obtenemos la precedencia de quien ya estaba en el stack
-        	// Comparamos las precedencias y decidimos si hay que operar
-        	// Es posible que necesitemos un ciclo aqui, una vez tengamos varios niveles de precedencia
-        	// Al terminar operaciones pendientes, guardamos op en stack
-
+        
+        //Vemos si el stack esta vacio o si op es un parentesis izquierdo
+        // Si no hay operandos o si op es LPAREN automaticamente ingresamos op al stack
+        if ( this.operadores.isEmpty() || op.getId() == Token.LPAREN) {
+            this.operadores.push(op);
+        } else if ( op.getId() == Token.RPAREN) {
+            // Operamos todo dentro de los parentesis hasta llegar al parentesis izquierdo
+            while ( this.operadores.peek().getId() != Token.LPAREN )   {
+                popOp();
+            }
+            // Quitamos el parentesis izquierdo ya que hicimos todas las operaciones dentro de los parentesis
+            this.operadores.pop();
+        } else {
+            // Obtenemos la precedencia de op
+            int opPre = pre(op);
+            // Comparamos las precedencias y decidimos si hay que operar
+            while ( !this.operadores.isEmpty() && opPre <= pre(this.operadores.peek()) )   {
+                // Operamos
+                popOp();
+            }
+            // Añadimos la operacion cuando sabemos que ya se operaron las operaciones con mayor precedencia
+            this.operadores.push(op);
+        }
     }
-
-    /* TODO: sus otras funciones aqui */
 
     /*
         S ::= E;
